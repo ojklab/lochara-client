@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+      }
+      #map {
+        height: 80%;
+        width: 100%;
+      }
+      button {
+        width: 50%;
+        padding: 20px;
+        text-align: center;
+        margin: 35px 0 70px;
+        border-radius: 20px;
+        font-size: 1.5em;
+      }
+      .center {
+        text-align: center;
+      }
+      table {
+        float: left;
+        border-collapse: collapse;
+      }
+
+      table img {
+        width: 55%;
+        margin-right: 5%;
+        text-align: center;
+      }
+
+      td {
+        background-color: rgb(230, 249, 255);
+        border: solid 1px #7fc1da;
+        text-align: left;
+      }
+      td:first-child {
+        display: flex;
+        background-color: #80c7cb;
+        color: white;
+      }
+
+      td:nth-child(2) {
+        width: 17.5%;
+      }
+      td:nth-child(3) {
+        width: 17.5%;
+      }
+      td:nth-child(4) {
+        width: 40%;
+      }
+    </style>
+  </head>
+  <body @vue:mounted="initMap">
+    <h1>ゆるキャラ紹介サイトへようこそ！</h1>
+    <p>
+      このサイトを通して全国のゆるキャラについて知っていただきたいです。
+      好きな場所を選んで下さい。
+    </p>
+    <h2 class="center">↓ 場所を選択して確定ボタンを押してね ↓</h2>
+    <div id="map"></div>
+
+    <script>
+      ((g) => {
+        var h,
+          a,
+          k,
+          p = 'The Google Maps JavaScript API',
+          c = 'google',
+          l = 'importLibrary',
+          q = '__ib__',
+          m = document,
+          b = window;
+        b = b[c] || (b[c] = {});
+        //b[c]：グローバルオブジェクト`b`内で、`c`というプロパティ(ここでは"google")を取得
+
+        //b[c] || (b[c] = {}):もし、b[c]が存在する場合、その値を使う 存在しない場合は新しいオブジェクト`{}`を作成し、それをb[c]に代入する
+
+        var d = b.maps || (b.maps = {}),
+          //b.maps || (b.maps = {}): もし b.maps が存在する（truthyである）場合、その値を使う 存在しない（falsyである）場合、新しいオブジェクト {} を b.maps に代入し、それを使う
+
+          r = new Set(),
+          e = new URLSearchParams(),
+          u = () =>
+            h ||
+            (h = new Promise(async (f, n) => {
+              await (a = m.createElement('script'));
+              e.set('libraries', [...r] + '');
+              for (k in g)
+                e.set(
+                  k.replace(/[A-Z]/g, (t) => '_' + t[0].toLowerCase()),
+                  g[k]
+                );
+              e.set('callback', c + '.maps.' + q);
+              a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+              d[q] = f;
+              a.onerror = () => (h = n(Error(p + ' could not load.')));
+              a.nonce = m.querySelector('script[nonce]')?.nonce || '';
+              m.head.append(a);
+            }));
+        d[l]
+          ? console.warn(p + ' only loads once. Ignoring:', g)
+          : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)));
+      })({
+        key: 'AIzaSyC-eqczaXx5cNF0kSopRY68O9q20VmRlE4',
+      });
+    </script>
+
+    <p>
+      データの読み込みに時間が掛かり、表示が遅くなる場合があります。すぐに表示されない時は少し待って下さい。
+    </p>
+    <div class="center">
+      <button @click="getResource">確定</button>
+    </div>
+    <table v-if="data">
+      <tr v-for="item in data.result">
+        <td>
+          <img :src="item.image_full" />
+          <p>名前：{{item.name}}</p>
+        </td>
+        <td>場所：{{item.location}}</td>
+        <td>所属：{{item.belong}}</td>
+        <td>プロフィール{{item.profile}}</td>
+      </tr>
+    </table>
+    <script src="https://unpkg.com/petite-vue"></script>
+    <script src="map.js"></script>
+  </body>
+</html>
